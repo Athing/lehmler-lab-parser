@@ -16,6 +16,10 @@ def parse():
                       header=True)
 
     df = pd.DataFrame(pd.read_csv(filename + ".csv"))
+
+    newcol = [(re.search('\(.*\)', str(x))).group() for x in df['Sample_ID']]
+    df.insert(1,"Transition", newcol)
+    
     df['Sample_ID'] = [re.sub('\+.*\)\s', '', str(x)) for x in df['Sample_ID']]
     df['Sample_ID'] = [re.sub('\s\s.*', '', str(x)) for x in df['Sample_ID']]
     df['Sample_ID'] = [re.sub('\s', '', str(x)) for x in df['Sample_ID']]
