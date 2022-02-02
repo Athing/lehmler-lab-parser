@@ -4,20 +4,25 @@ import re
 import sys
 import os
 
-file = sys.argv[1]
-filename, file_extension = os.path.splitext(file)
-outname = Path(file).stem
+def parse():
+    file = sys.argv[1]
+    filename, file_extension = os.path.splitext(file)
+    outname = Path(file).stem
 
-read_file = pd.read_excel(file)
+    read_file = pd.read_excel(file)
 
-read_file.to_csv (filename + ".csv",
-                  index = None,
-                  header=True)
+    read_file.to_csv (filename + ".csv",
+                      index = None,
+                      header=True)
 
-df = pd.DataFrame(pd.read_csv(filename + ".csv"))
-df['Sample_ID'] = [re.sub('\+.*\)\s', '', str(x)) for x in df['Sample_ID']]
-df['Sample_ID'] = [re.sub('\s\s.*', '', str(x)) for x in df['Sample_ID']]
-df['Sample_ID'] = [re.sub('\s', '', str(x)) for x in df['Sample_ID']]
+    df = pd.DataFrame(pd.read_csv(filename + ".csv"))
+    df['Sample_ID'] = [re.sub('\+.*\)\s', '', str(x)) for x in df['Sample_ID']]
+    df['Sample_ID'] = [re.sub('\s\s.*', '', str(x)) for x in df['Sample_ID']]
+    df['Sample_ID'] = [re.sub('\s', '', str(x)) for x in df['Sample_ID']]
 
-os.makedirs("./parsed", exist_ok=True)
-df.to_csv("./parsed/" + outname + ".csv", sep=',', encoding='utf-8', index=False)
+    os.remove(filename + ".csv")
+    os.makedirs("./parsed", exist_ok=True)
+    df.to_csv("./parsed/" + outname + ".csv", sep=',', encoding='utf-8', index=False)
+
+if __name__ == '__main__':
+    parse()
